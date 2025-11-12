@@ -16,10 +16,32 @@ Kubernetes Cluster with the following components:
   - Loki
   - ArgoCD
 
-  ## Participants
+## Asigned Tasks
 
-  - Diego Rodriguez Vicente
-  - Mario Moure Pérez
-  - Patrick Miguez Álvarez
-  - Sergio Comesaña García
-  - Xián Boullosa Trigo
+### Sergio && Mario
+
+- Github Actions / Workflows
+- Linters && Metrics
+- Environments
+- Environment Promotions (Manual / Automatic)
+- Releases & Tagging
+
+### Diego
+
+- K8n deployments (Sonar, Postgres, PGAdmin, Nexus / other action)
+
+### Xian
+
+- ArgoCD
+
+### Patrick
+
+- Grafana / Prometheus
+
+## Participants
+
+- Diego Rodriguez Vicente
+- Mario Moure Pérez
+- Patrick Miguez Álvarez
+- Sergio Comesaña García
+- Xián Boullosa Trigo
