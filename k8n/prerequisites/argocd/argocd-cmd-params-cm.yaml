@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  ## Server properties
+  # Run server without TLS
+  server.insecure: "false"
+  # Value for base href in index.html. Used if Argo CD is running behind reverse proxy under subpath different from / (default "/")
+  server.basehref: "/argo-cd"
+  
