@@ -31,11 +31,11 @@ spec:
                 name: sonar-config
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "50m"
-            limits:
               memory: "1024Mi"
               cpu: "500m"
+            limits:
+              memory: "10240Mi"
+              cpu: "4"
           image: sonarqube:latest
           ports:
             - containerPort: 9000
