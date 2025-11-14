@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./nginx-test
   - ./posgress
+  - ./pgadmin
 
 # TODO: Include all the needed services into the kustomization
 #  - service.yaml
