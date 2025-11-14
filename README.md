@@ -34,14 +34,15 @@ Kubernetes Cluster with the following components:
 
 - ArgoCD
 
-### Patrick
+### Patrick / Jose
 
-- Grafana / Prometheus
+- Grafana / Prometheus / Loki
 
 ## Participants
 
 - Diego Rodriguez Vicente
 - Mario Moure Pérez
 - Patrick Miguez Álvarez
+- Jose Iglesias Gonzalez
 - Sergio Comesaña García
 - Xián Boullosa Trigo
