@@ -15,15 +15,15 @@ spec:
       securityContext:
         fsGroup: 1000
       # Fixes issues with permissions on hostPath bindings
-      initContainers:
-        - name: fix-permissions
-          image: busybox
-          command: ["sh", "-c", "chmod -R 777 /opt/sonarqube && chown -R 1000:1000 /opt/sonarqube"]
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: sonarqube-data
-              mountPath: /opt/sonarqube
+#      initContainers:
+#        - name: fix-permissions
+#          image: busybox
+#          command: ["sh", "-c", "chmod -R 777 /opt/sonarqube && chown -R 1000:1000 /opt/sonarqube"]
+#          securityContext:
+#            privileged: true
+#          volumeMounts:
+#            - name: sonarqube-data
+#              mountPath: /opt/sonarqube
       containers:
         - name: sonarqube
           image: sonarqube:latest
@@ -36,18 +36,21 @@ spec:
               value: postgres # TODO: Create specific user for sonar?
             - name: SONAR_JDBC_PASSWORD
               value: "your-secret-password" # TODO: Must use postgresql's defined secret
-          volumeMounts:
-            - name: sonarqube-data
-              mountPath: /opt/sonarqube/data
-            - name: sonarqube-logs
-              mountPath: /opt/sonarqube/logs
-            - name: sonarqube-extensions
-              mountPath: /opt/sonarqube/extensions
-      volumes:
-        - name: sonarqube-data
-          persistentVolumeClaim:
-            claimName: sonarqube-pvc
-        - name: sonarqube-logs
-          emptyDir: {} # or separate PVC if you want persistence
-        - name: sonarqube-extensions
-          emptyDir: {} # or separate PVC if you want persistence
+
+## Removing volues as we're ok with an ephemeral installation
+#          volumeMounts:
+#            - name: sonarqube-data
+#              mountPath: /opt/sonarqube/data
+#            - name: sonarqube-logs
+#              mountPath: /opt/sonarqube/logs
+#            - name: sonarqube-extensions
+#              mountPath: /opt/sonarqube/extensions
+#
+#      volumes:
+#        - name: sonarqube-data
+#          persistentVolumeClaim:
+#            claimName: sonarqube-pvc
+#        - name: sonarqube-logs
+#          emptyDir: {} # or separate PVC if you want persistence
+#        - name: sonarqube-extensions
+#          emptyDir: {} # or separate PVC if you want persistence

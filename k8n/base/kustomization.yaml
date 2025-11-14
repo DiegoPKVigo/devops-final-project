@@ -5,6 +5,7 @@ resources:
   - ./nginx-test
   - ./posgress
   - ./pgadmin
+  - ./sonar
 
 # TODO: Include all the needed services into the kustomization
 #  - service.yaml
