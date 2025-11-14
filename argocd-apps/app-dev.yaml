@@ -9,9 +9,9 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/Sherpard/k8s-gitops-demo
-    targetRevision: master
-    path: overlays/dev
+    repoURL: https://github.com/Sherpard/devops-final-project
+    targetRevision: develop
+    path: k8n/overlays/dev
 
   destination:
     server: https://kubernetes.default.svc

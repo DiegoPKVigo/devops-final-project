@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - nginx-test/deployment.yaml
+  - nginx-test
 
 # TODO: Include all the needed services into the kustomization
 #  - service.yaml
