@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: webapp
 spec:
-  replicas: 2 # Dev uses fewer replicas for resource efficiency
+  replicas: 15 # Dev uses fewer replicas for resource efficiency
