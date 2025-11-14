@@ -1,6 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp
+  name: nginx-test
 spec:
   replicas: 15 # Dev uses fewer replicas for resource efficiency

@@ -8,7 +8,6 @@ namePrefix: dev-
 resources:
   - ../../base
 
-# Replace deprecated 'patchesStrategicMerge' with 'patches'
 patches:
   - path: ./nginx-test/replica-patch.yaml
     target:

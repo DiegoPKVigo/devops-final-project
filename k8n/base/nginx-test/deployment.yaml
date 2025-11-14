@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp
+  name: nginx-test
   labels:
-    app: webapp
+    app: nginx-test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webapp
+      app: nginx-test
   template:
     metadata:
       labels:
-        app: webapp
+        app: nginx-test
     spec:
       containers:
-        - name: webapp
+        - name: nginx-test
           image: nginxdemos/hello:latest
           ports:
             - containerPort: 80
