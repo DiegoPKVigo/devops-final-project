@@ -39,6 +39,15 @@ spec:
           image: sonarqube:latest
           ports:
             - containerPort: 9000
+          readinessProbe:
+            httpGet:
+              path: /api/system/health
+              port: 9000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
 ## Removing volues as we're ok with an ephemeral installation
 #          volumeMounts:
 #            - name: sonarqube-data
