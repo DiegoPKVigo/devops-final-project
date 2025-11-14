@@ -28,8 +28,8 @@ spec:
             httpGet:
               path: /pgadmin/misc/ping
               port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: 300
+            periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 3
 
@@ -37,7 +37,7 @@ spec:
             httpGet:
               path: /pgadmin/misc/ping
               port: 80
-            initialDelaySeconds: 60
+            initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: 5
             failureThreshold: 5
