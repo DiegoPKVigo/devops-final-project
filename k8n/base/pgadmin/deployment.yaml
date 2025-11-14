@@ -22,3 +22,5 @@ spec:
               value: admin@example.com
             - name: PGADMIN_DEFAULT_PASSWORD
               value: admin
+            - name: SCRIPT_NAME
+              value: /pgadmin
