@@ -9,7 +9,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /pgadmin
         pathType: Prefix
         backend:
           service:
