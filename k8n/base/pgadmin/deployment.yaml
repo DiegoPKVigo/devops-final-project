@@ -24,5 +24,3 @@ spec:
               value: admin
             - name: SCRIPT_NAME
               value: /pgadmin
-            - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
-              value: "false"
