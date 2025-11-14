@@ -3,16 +3,16 @@ kind: Ingress
 metadata:
   name: pgadmin-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
   - http:
       paths:
-      - path: /pgadmin
-        pathType: Prefix
+      - path: /pgadmin(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: pgadmin-service
             port:
-              number: 80
+              name: http
