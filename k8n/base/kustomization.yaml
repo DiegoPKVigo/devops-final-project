@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ./nginx-test
+  - ./posgress
 
 # TODO: Include all the needed services into the kustomization
 #  - service.yaml
