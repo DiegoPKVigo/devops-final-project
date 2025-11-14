@@ -8,10 +8,9 @@ bases:
   - ../../base
 
 # TODO: Define what kind of patching is needed
-# patchesStrategicMerge:
-#  - replica-patch.yaml
-#  - configmap-patch.yaml
-#  - ingress-patch.yaml
+patchesStrategicMerge:
+ - nginx-test/replica-patch.yaml
+ - nginx-test/ingress-patch.yaml
 
 commonLabels:
   environment: dev
