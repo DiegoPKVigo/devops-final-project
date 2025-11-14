@@ -17,7 +17,16 @@ patches:
     target:
       kind: Ingress
       name: nginx-test-ingress
-# Modern 'labels' syntax (map, not list)
+  
+  # Sonarqube
+  - path: ./sonar/configmap-patch.yaml
+    target:
+      kind: ConfigMap
+      name: sonar-config
+
+
+
+
 labels:
   - pairs:
       environment: dev
