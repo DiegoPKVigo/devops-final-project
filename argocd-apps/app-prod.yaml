@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: quality-stack-dev
+  name: webapp-prod
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,17 +11,13 @@ spec:
   source:
     repoURL: https://github.com/Sherpard/k8s-gitops-demo
     targetRevision: master
-    path: overlays/dev
+    path: overlays/prod
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev
+    namespace: prod
 
   syncPolicy:
-    automated:
-      prune: true # Delete resources removed from Git
-      selfHeal: true # Revert manual changes
-      allowEmpty: false
     syncOptions:
       - CreateNamespace=true
     retry:

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: quality-stack-dev
+  name: webapp-staging
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,11 +11,11 @@ spec:
   source:
     repoURL: https://github.com/Sherpard/k8s-gitops-demo
     targetRevision: master
-    path: overlays/dev
+    path: overlays/staging
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev
+    namespace: staging
 
   syncPolicy:
     automated:
