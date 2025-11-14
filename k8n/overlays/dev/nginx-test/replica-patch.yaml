@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: nginx-test
 spec:
-  replicas: 15 # Dev uses fewer replicas for resource efficiency
+  replicas: 1 # Dev uses fewer replicas for resource efficiency

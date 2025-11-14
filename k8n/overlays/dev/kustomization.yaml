@@ -16,7 +16,7 @@ patches:
   - path: ./nginx-test/ingress-patch.yaml
     target:
       kind: Ingress
-      name: nginx-test
+      name: nginx-test-ingress
 # Modern 'labels' syntax (map, not list)
 labels:
   - pairs:
