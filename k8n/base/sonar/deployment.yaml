@@ -15,28 +15,30 @@ spec:
       securityContext:
         fsGroup: 1000
       # Fixes issues with permissions on hostPath bindings
-#      initContainers:
-#        - name: fix-permissions
-#          image: busybox
-#          command: ["sh", "-c", "chmod -R 777 /opt/sonarqube && chown -R 1000:1000 /opt/sonarqube"]
-#          securityContext:
-#            privileged: true
-#          volumeMounts:
-#            - name: sonarqube-data
-#              mountPath: /opt/sonarqube
+      #      initContainers:
+      #        - name: fix-permissions
+      #          image: busybox
+      #          command: ["sh", "-c", "chmod -R 777 /opt/sonarqube && chown -R 1000:1000 /opt/sonarqube"]
+      #          securityContext:
+      #            privileged: true
+      #          volumeMounts:
+      #            - name: sonarqube-data
+      #              mountPath: /opt/sonarqube
       containers:
         - name: sonar
+          envFrom:
+            - configMapRef:
+                name: sonar-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
           image: sonarqube:latest
           ports:
             - containerPort: 9000
-          env:
-            - name: SONAR_JDBC_URL
-              value: jdbc:postgresql://postgres:5432/postgres # TODO: Separate to a different database?
-            - name: SONAR_JDBC_USERNAME
-              value: postgres # TODO: Create specific user for sonar?
-            - name: SONAR_JDBC_PASSWORD
-              value: "your-secret-password" # TODO: Must use postgresql's defined secret
-
 ## Removing volues as we're ok with an ephemeral installation
 #          volumeMounts:
 #            - name: sonarqube-data

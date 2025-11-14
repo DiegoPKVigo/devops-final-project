@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonar-config
+data:
+  SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/postgres # TODO: Separate to a different database?
+  SONAR_JDBC_USERNAME: postgres # TODO: Create specific user for sonar?
+  SONAR_JDBC_PASSWORD: "your-secret-password" # TODO: Must use postgresql's defined secret

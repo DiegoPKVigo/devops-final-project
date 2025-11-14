@@ -6,5 +6,6 @@ kind: Kustomization
 resources:
   - stateful-set.yaml
   - service.yaml
+  - configmap.yaml
   - persistent-volume.yaml
   - persistent-volume-claim.yaml

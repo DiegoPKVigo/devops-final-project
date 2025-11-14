@@ -15,10 +15,10 @@ spec:
     spec:
       containers:
         - name: postgres
+          envFrom:
+            - configMapRef:
+                name: postgres-config
           image: postgres:17 # You can change the version here
-          env:
-            - name: POSTGRES_PASSWORD
-              value: "your-secret-password" # TODO: Store in a SECRET
           volumeMounts:
               - name: postgres-data
                 mountPath: /var/lib/postgresql/data
