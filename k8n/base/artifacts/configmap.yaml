@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nexus-config
+data:
+  NEXUS_CONTEXT: nexus
+  # TODO: Add postgresql connection settings?
