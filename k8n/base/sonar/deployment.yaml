@@ -12,18 +12,22 @@ spec:
       labels:
         app: sonar
     spec:
-      securityContext:
-        fsGroup: 1000
-      # Fixes issues with permissions on hostPath bindings
-      #      initContainers:
-      #        - name: fix-permissions
-      #          image: busybox
-      #          command: ["sh", "-c", "chmod -R 777 /opt/sonarqube && chown -R 1000:1000 /opt/sonarqube"]
-      #          securityContext:
-      #            privileged: true
-      #          volumeMounts:
-      #            - name: sonarqube-data
-      #              mountPath: /opt/sonarqube
+      initContainers:
+        - name: wait-for-postgres
+          envFrom:
+            - configMapRef:
+                name: sonar-config
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Postgres at $POSTGRES_HOST:$POSTGRES_PORT..."
+              while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+                echo "Postgres not ready yet..."
+                sleep 3
+              done
+              echo "Postgres is ready!"
       containers:
         - name: sonar
           envFrom:
@@ -39,22 +43,3 @@ spec:
           image: sonarqube:latest
           ports:
             - containerPort: 9000
-
-
-## Removing volues as we're ok with an ephemeral installation
-#          volumeMounts:
-#            - name: sonarqube-data
-#              mountPath: /opt/sonarqube/data
-#            - name: sonarqube-logs
-#              mountPath: /opt/sonarqube/logs
-#            - name: sonarqube-extensions
-#              mountPath: /opt/sonarqube/extensions
-#
-#      volumes:
-#        - name: sonarqube-data
-#          persistentVolumeClaim:
-#            claimName: sonarqube-pvc
-#        - name: sonarqube-logs
-#          emptyDir: {} # or separate PVC if you want persistence
-#        - name: sonarqube-extensions
-#          emptyDir: {} # or separate PVC if you want persistence
