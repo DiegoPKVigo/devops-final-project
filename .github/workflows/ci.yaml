@@ -1,0 +1,102 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  lint:
+    name: Lint Code 
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        namespace: [dev, staging, prod]
+    environment: ${{ matrix.namespace }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4       
+        
+      - name: Check runner environment
+        run: |
+          echo "🖥️ Información del runner:"
+          echo "Hostname: $(hostname)"
+          echo "OS: $(uname -s)"
+          echo "Directorio de trabajo: $(pwd)"
+        
+      - name: Verify kubectl access
+        run: |
+          echo "🔍 Verificando acceso a Kubernetes..."
+          kubectl version --client
+          kubectl config current-context
+
+      - name: Apply Kubernetes manifests for ${{ matrix.namespace }}
+        run: |
+          echo "🚀 Aplicando configuración de Kubernetes para el namespace ${{ matrix.namespace }}..."
+          kubectl apply -k k8n/overlays/${{ matrix.namespace }}
+
+      - name: Wait for pods to be ready in ${{ matrix.namespace }}
+        run: |
+          echo "⏳ Esperando a que los pods estén listos en el namespace ${{ matrix.namespace }}..."
+          kubectl wait --for=condition=Ready pods --all -n ${{ matrix.namespace }} --timeout=300s
+
+      - name: Test pods in namespace
+        run: |
+          PODS=("sonar" "pgadmin" "nginx-test")
+          NAMESPACE="${{ matrix.namespace }}"
+          for app in "${PODS[@]}"; do
+            STATUS=$(kubectl get pods -n $NAMESPACE -l app=$app -o jsonpath='{.items[0].status.phase}' || echo "NotFound")
+            echo "Pod $app en $NAMESPACE: $STATUS"
+            if [ "$STATUS" != "Running" ]; then
+              echo "$app NO está levantado en $NAMESPACE"
+              exit 1
+            fi
+            echo "$app está RUNNING en $NAMESPACE"
+          done
+        
+      - name: Success!
+        run: |
+          echo "¡El runner funciona y tiene acceso al clúster!"       
+
+  sonar:
+    name: SonarQube Analysis with Coverage 
+    runs-on: self-hosted
+    needs: lint
+    strategy:
+      matrix:
+        namespace: [dev, staging, prod]
+    environment: ${{ matrix.namespace }}
+    env:
+      SONAR_PROJECT_KEY: final-project-${{ matrix.namespace }}
+      SONAR_PROJECT_NAME: final-project-${{ matrix.namespace }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-reports
+
+      - name: Run SonarQube Scan with Coverage
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+
+      - name: Wait & check SonarQube quality gate
+        run: |
+          chmod +x scripts/check_sonar_quality_gate.sh
+          ./scripts/check_sonar_quality_gate.sh devops-lab-1 180
+
+      - name: Display SonarQube metrics
+        if: always()
+        run: |
+          echo "SonarQube Analysis Complete!"
+          echo "================================"
+          echo "Check your SonarQube dashboard at: $SONAR_HOST_URL"
+          echo "Project: $SONAR_PROJECT_KEY"
+          echo "Coverage data has been integrated with code quality metrics"       
