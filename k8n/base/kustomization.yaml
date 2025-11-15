@@ -3,9 +3,10 @@ kind: Kustomization
 
 resources:
   - ./nginx-test
-  - ./postgress
+  - ./postgres
   - ./pgadmin
   - ./sonar
+  - ./artifacts
 
 # TODO: Include all the needed services into the kustomization
 #  - service.yaml

@@ -7,25 +7,12 @@ namePrefix: dev-
 # Replace 'bases' with 'resources'
 resources:
   - ../../base
+  - ./artifacts
+  - ./nginx-test
+  - ./postgres
+  - ./sonar
 
-patches:
-  - path: ./nginx-test/replica-patch.yaml
-    target:
-      kind: Deployment
-      name: nginx-test
-  - path: ./nginx-test/ingress-patch.yaml
-    target:
-      kind: Ingress
-      name: nginx-test-ingress
   
-  # Sonarqube
-  - path: ./sonar/configmap-patch.yaml
-    target:
-      kind: ConfigMap
-      name: sonar-config
-
-
-
 
 labels:
   - pairs:

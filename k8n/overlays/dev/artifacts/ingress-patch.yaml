@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sonar-ingress
+  name: nexus-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
     kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
   rules:
   - http:
       paths:
-      - path: /sonar(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /dev/nexus
+        pathType: Prefix
         backend:
           service:
-            name: sonar-service
+            name: nexus-service
             port:
-              number: 9000
+              name: http

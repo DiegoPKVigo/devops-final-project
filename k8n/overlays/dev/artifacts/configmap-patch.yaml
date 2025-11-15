@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: nexus-config
 data:
-  NEXUS_CONTEXT: nexus
+  NEXUS_CONTEXT: dev/nexus
   # TODO: Add postgresql connection settings?
