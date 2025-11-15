@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  POSTGRES_PASSWORD: "your-secret-password"
+  POSTGRES_PASSWORD: "your-dev-password"

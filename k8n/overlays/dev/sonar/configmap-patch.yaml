@@ -4,3 +4,4 @@ metadata:
   name: sonar-config
 data:
   POSTGRES_HOST: dev-postgres
+  SONAR_JDBC_PASSWORD: your-dev-password

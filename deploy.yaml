@@ -1,0 +1,472 @@
+apiVersion: v1
+data:
+  NEXUS_CONTEXT: nexus
+kind: ConfigMap
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-nexus-config
+  namespace: dev
+---
+apiVersion: v1
+data:
+  POSTGRES_PASSWORD: your-secret-password
+kind: ConfigMap
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-postgres-config
+  namespace: dev
+---
+apiVersion: v1
+data:
+  POSTGRES_DB: postgres
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+  SONAR_JDBC_PASSWORD: your-secret-password
+  SONAR_JDBC_URL: jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)
+  SONAR_JDBC_USERNAME: postgres
+  SONARQUBE_WEB_CONTEXT: /sonar
+kind: ConfigMap
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-sonar-config
+  namespace: dev
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-nexus-service
+  namespace: dev
+spec:
+  ports:
+  - name: http
+    port: 8081
+    targetPort: 8081
+  selector:
+    app: nexus
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-nginx-test-service
+  namespace: dev
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx-test
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-pgadmin-service
+  namespace: dev
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: pgadmin
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-postgres
+  namespace: dev
+spec:
+  clusterIP: None
+  ports:
+  - name: postgres
+    port: 5432
+  selector:
+    app: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-sonar-service
+  namespace: dev
+spec:
+  ports:
+  - name: http
+    port: 9000
+    targetPort: 9000
+  selector:
+    app: sonar
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-postgres-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+  hostPath:
+    path: /var/lib/postgresql/data
+    type: DirectoryOrCreate
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-postgres-pvc
+  namespace: dev
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-nexus
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
+  template:
+    metadata:
+      labels:
+        app: nexus
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: dev-nexus-config
+        image: sonatype/nexus3:latest
+        name: nexus
+        ports:
+        - containerPort: 8081
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-nginx-test
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      containers:
+      - image: nginxdemos/hello:latest
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        name: nginx-test
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-pgadmin
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+      - env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: admin@example.com
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: admin
+        - name: SCRIPT_NAME
+          value: /pgadmin
+        image: dpage/pgadmin4
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /pgadmin/misc/ping
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 15
+          timeoutSeconds: 5
+        name: pgadmin
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /pgadmin/misc/ping
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-sonar
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonar
+  template:
+    metadata:
+      labels:
+        app: sonar
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: dev-sonar-config
+        image: sonarqube:latest
+        name: sonar
+        ports:
+        - containerPort: 9000
+        resources:
+          limits:
+            cpu: "4"
+            memory: 10240Mi
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Postgres at $POSTGRES_HOST:$POSTGRES_PORT..."
+          while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+            echo "Postgres not ready yet..."
+            sleep 3
+          done
+          echo "Postgres is ready!"
+        envFrom:
+        - configMapRef:
+            name: dev-sonar-config
+        image: busybox
+        name: wait-for-postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-postgres
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: dev-postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: dev-postgres-config
+        image: postgres:17
+        name: postgres
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: dev-postgres-pvc
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-nexus-ingress
+  namespace: dev
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: dev-nexus-service
+            port:
+              name: http
+        path: /nexus
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-nginx-test-ingress
+  namespace: dev
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: dev-nginx-test-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-pgadmin-ingress
+  namespace: dev
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: dev-pgadmin-service
+            port:
+              number: 80
+        path: /pgadmin
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  labels:
+    app: webapp
+    environment: dev
+    managed-by: argocd
+  name: dev-sonar-ingress
+  namespace: dev
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: dev-sonar-service
+            port:
+              number: 9000
+        path: /sonar(/|$)(.*)
+        pathType: ImplementationSpecific
