@@ -1,0 +1,37 @@
+name: Deploy
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to ${{ matrix.environment }}
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        environment: [dev, staging, prod]
+    environment:
+      name: ${{ matrix.environment }}
+      url: ${{ matrix.environment == 'dev' && 'http://dev.local' || matrix.environment == 'staging' && 'http://staging.local' || 'http://prod.local' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to ${{ matrix.environment }}
+        run: |
+          echo "Desplegando en el entorno ${{ matrix.environment }}..."
+          kubectl apply -k k8n/overlays/${{ matrix.environment }}
+
+      - name: Wait for rollout
+        run: |
+          echo "Esperando a que termine el despliegue en ${{ matrix.environment }}..."
+          kubectl rollout status deployment/${{ matrix.environment }}-webapp -n ${{ matrix.environment }} --timeout=5m
+
+      - name: Verify deployment
+        run: |
+          echo "Verificando el despliegue en ${{ matrix.environment }}..."
+          kubectl get pods -n ${{ matrix.environment }} -l app=webapp
+          kubectl get svc -n ${{ matrix.environment }}
+
+      - name: Deployment complete
+        run: echo "¡Despliegue en ${{ matrix.environment }} finalizado!" 
