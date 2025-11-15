@@ -3,6 +3,10 @@ kind: PersistentVolume
 metadata:
   name: postgres-pv
 spec:
+  capacity:
+    storage: 512Mi
+  # Volume is deleted when released on dev
+  persistentVolumeReclaimPolicy: Delete
   hostPath:
     # Docker Desktop for Windows runs Kubernetes inside a VM; use a path that exists
     # inside that VM. For many Docker Desktop setups the following path works.

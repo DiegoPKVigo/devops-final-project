@@ -12,3 +12,7 @@ patches:
     target:
       kind: PersistentVolume
       name: postgres-pv
+  - path: ./persistent-volume-claim-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: postgres-pvc
