@@ -6,7 +6,7 @@ namePrefix: dev-
 
 # Replace 'bases' with 'resources'
 resources:
-  - ../../base
+#   - ../../base
   - ./artifacts
   - ./nginx-test
   - ./postgres

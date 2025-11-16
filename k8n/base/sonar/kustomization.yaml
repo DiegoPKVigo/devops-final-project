@@ -4,7 +4,7 @@ kind: Kustomization
 
 # List resources in this base
 resources:
-  - deployment.yaml
-  - service.yaml
-  - ingress.yaml
   - configmap.yaml
+  - deployment.yaml
+  - ingress.yaml
+  - service.yaml
