@@ -17,6 +17,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: sonar-config
+          env: # Used so variables are interpolated correctly into the variable
+            - name: SONAR_JDBC_URL
+              value: "jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
           image: busybox
           command:
             - sh
