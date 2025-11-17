@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nexus-config
+data:
+  NEXUS_CONTEXT: staging/nexus
+  NEXUS_DB: nexus
+  POSTGRES_DB: postgres
+  POSTGRES_HOST: staging-postgres
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: your-staging-password
+  NEXUS_DATASTORE_NEXUS_USERNAME: nexus
+  NEXUS_DATASTORE_NEXUS_PASSWORD: nexus-password

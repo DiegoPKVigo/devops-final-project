@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: init-postgres-db
+          envFrom:
+            - configMapRef:
+                name: staging-nexus-config
+          image: postgres:17-alpine
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Postgres at $POSTGRES_HOST:$POSTGRES_PORT..."
+              while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+                echo "Postgres not ready yet..."
+                sleep 3
+              done
+              echo "Postgres is ready!"
+              export PGPASSWORD=${POSTGRES_PASSWORD}
+              psql \
+              -h $POSTGRES_HOST \
+              -U $POSTGRES_USER \
+              -d $POSTGRES_DB \
+              -c "CREATE DATABASE ${NEXUS_DB} ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8' TEMPLATE template0;"
+              psql -h $POSTGRES_HOST -U $POSTGRES_USER -d ${NEXUS_DB} <<SQL
+              CREATE SCHEMA ${NEXUS_DB};
+              CREATE USER ${NEXUS_DATASTORE_NEXUS_USERNAME} WITH PASSWORD '${NEXUS_DATASTORE_NEXUS_PASSWORD}';
+              GRANT ALL PRIVILEGES ON DATABASE ${NEXUS_DB} TO ${NEXUS_DATASTORE_NEXUS_USERNAME};
+              GRANT ALL PRIVILEGES ON SCHEMA ${NEXUS_DB} TO ${NEXUS_DATASTORE_NEXUS_USERNAME};
+              CREATE EXTENSION pg_trgm SCHEMA ${NEXUS_DB};
+              SQL
+      containers:
+      - name: nexus
+        env: # Used so variables are interpolated correctly into the variable
+        - name: NEXUS_DATASTORE_NEXUS_JDBCURL
+          value: "jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${NEXUS_DB}"

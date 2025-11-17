@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../base/artifacts
+
+patches:
+  - path: ./deployment-patch.yaml
+    target:
+      kind: Deployment
+      name: nexus
+  - path: ./ingress-patch.yaml
+    target:
+      kind: Ingress
+      name: nexus-ingress
+  - path: ./configmap-patch.yaml
+    target:
+      kind: ConfigMap
+      name: nexus-config
