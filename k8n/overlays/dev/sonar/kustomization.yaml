@@ -8,7 +8,7 @@ patches:
     target:
       kind: ConfigMap
       name: sonar-config
-  - path: ./ingress.yaml
+  - path: ./ingress-patch.yaml
     target:
       kind: Ingress
       name: sonar-ingress

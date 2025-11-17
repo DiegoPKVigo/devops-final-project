@@ -8,7 +8,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /sonar
+          - path: /dev/sonar
             pathType: Prefix
             backend:
               service:
