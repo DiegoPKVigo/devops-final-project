@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+spec:
+  limits:
+    - type: Container
+
+      # === DEFAULT REQUESTS (auto-applied if missing) ===
+      defaultRequest:
+        cpu: 50m
+        memory: 64Mi
+        ephemeral-storage: 256Mi
+
+      # === DEFAULT LIMITS (auto-applied if missing) ===
+      default:
+        cpu: "1"
+        memory: 512Mi
+        ephemeral-storage: 1Gi
+
+      # === MINIMUM allowed values ===
+      min:
+        cpu: 50m
+        memory: 64Mi
+        ephemeral-storage: 64Mi
+
+      # === MAXIMUM allowed values ===
+      max:
+        cpu: "2"
+        memory: 2Gi
+        ephemeral-storage: 4Gi
