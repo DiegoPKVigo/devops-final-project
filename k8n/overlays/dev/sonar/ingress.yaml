@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: sonar-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /sonar/$2
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
