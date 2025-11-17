@@ -4,13 +4,12 @@ metadata:
   name: nginx-test-ingress
 spec:
   rules:
-  - http:
-      paths:
-      - path: /dev/
-        pathType: Prefix
-        backend:
-          service: 
-            name: dev-nginx-test-service
-            port:
-              number: 80
-              
+    - http:
+        paths:
+          - path: /dev/
+            pathType: Prefix
+            backend:
+              service:
+                name: dev-nginx-test-service
+                port:
+                  number: 80
