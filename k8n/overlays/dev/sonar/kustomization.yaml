@@ -11,4 +11,4 @@ patches:
   - path: ./ingress.yaml
     target:
       kind: Ingress
-      name: sonar-config
+      name: sonar-ingress
