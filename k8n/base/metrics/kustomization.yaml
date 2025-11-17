@@ -6,7 +6,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - configmap.yaml
-  - service_promtail.yaml
-  - clusterrole.yaml
+  - rbac_promtail.yaml
+  - rbac-prometheus.yaml
   - daemonset_promtail.yaml
-  - rolebinding.yaml
+  - daemonset-node-exporter.yaml
