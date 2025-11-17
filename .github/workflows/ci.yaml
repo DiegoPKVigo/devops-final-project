@@ -78,7 +78,7 @@ jobs:
           args: >
             -Dsonar.projectKey=final-project-${{ matrix.namespace }}
             -Dsonar.projectName=final-project-${{ matrix.namespace }}
-            -Dsonar.sources=.
+            -Dsonar.sources=k8n/base,k8n/overlays/${{ matrix.namespace }}
             -Dsonar.inclusions=**/*.yaml,**/*.yml
             -Dsonar.exclusions=k8n/charts/**
             -Dsonar.qualitygate.wait=false
