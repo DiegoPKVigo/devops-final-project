@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    # Docker Desktop for Windows runs Kubernetes inside a VM; use a path that exists
+    # inside that VM. For many Docker Desktop setups the following path works.
+    path: /var/lib/postgresql/data
+    type: DirectoryOrCreate
+  # Do not set storageClassName so the default binding behaviour with the PVC will work

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonar-config
+data:
+  POSTGRES_HOST: dev-postgres
+  SONAR_JDBC_PASSWORD: your-dev-password
+  SONAR_WEB_CONTEXT: /dev/sonar

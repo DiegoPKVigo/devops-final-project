@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonar
+  template:
+    metadata:
+      labels:
+        app: sonar
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          envFrom:
+            - configMapRef:
+                name: sonar-config
+          env: # Used so variables are interpolated correctly into the variable
+            - name: SONAR_JDBC_URL
+              value: "jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Postgres at $POSTGRES_HOST:$POSTGRES_PORT..."
+              while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+                echo "Postgres not ready yet..."
+                sleep 3
+              done
+              echo "Postgres is ready!"
+      containers:
+        - name: sonar
+          envFrom:
+            - configMapRef:
+                name: sonar-config
+          resources:
+            requests:
+              memory: "1024Mi"
+              cpu: "500m"
+            limits:
+              memory: "10240Mi"
+              cpu: "4"
+          image: sonarqube:latest
+          ports:
+            - containerPort: 9000
