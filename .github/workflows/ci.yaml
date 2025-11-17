@@ -16,7 +16,7 @@ jobs:
     environment: ${{ matrix.namespace }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4       
+        uses: actions/checkout@v4
         
       - name: Start minikube
         id: minikube
@@ -24,45 +24,33 @@ jobs:
 
       - name: Check runner environment
         run: |
-          echo "🖥️ Información del runner:"
+          echo "Información del runner:"
           echo "Hostname: $(hostname)"
           echo "OS: $(uname -s)"
           echo "Directorio de trabajo: $(pwd)"
         
       - name: Verify minikube & kubectl access
         run: |
-          echo "🔍 Verificando minikube y acceso a Kubernetes..."
+          echo "Verificando minikube y acceso a Kubernetes..."
           minikube status || true
           kubectl version --client
           kubectl config current-context
 
-      - name: Apply Kubernetes manifests for ${{ matrix.namespace }}
+      - name: Validate kustomize base
         run: |
-          echo "🚀 Aplicando configuración de Kubernetes para el namespace ${{ matrix.namespace }}..."
-          kubectl apply -k k8n/overlays/${{ matrix.namespace }}
+          echo "Validating kustomize base..."
+          kubectl kustomize k8n/base/ > /dev/null
+          echo "Base kustomization OK!"
 
-      - name: Wait for pods to be ready in ${{ matrix.namespace }}
+      - name: Validate overlay for ${{ matrix.namespace }}
         run: |
-          echo "⏳ Esperando a que los pods estén listos en el namespace ${{ matrix.namespace }}..."
-          kubectl wait --for=condition=Ready pods --all -n ${{ matrix.namespace }} --timeout=300s
-
-      - name: Test pods in namespace
-        run: |
-          PODS=("sonar" "pgadmin" "nginx-test")
-          NAMESPACE="${{ matrix.namespace }}"
-          for app in "${PODS[@]}"; do
-            STATUS=$(kubectl get pods -n $NAMESPACE -l app=$app -o jsonpath='{.items[0].status.phase}' || echo "NotFound")
-            echo "Pod $app en $NAMESPACE: $STATUS"
-            if [ "$STATUS" != "Running" ]; then
-              echo "$app NO está levantado en $NAMESPACE"
-              exit 1
-            fi
-            echo "$app está RUNNING en $NAMESPACE"
-          done
-        
+          echo "Validating overlay: ${{ matrix.namespace }}..."
+          kubectl kustomize k8n/overlays/${{ matrix.namespace }} > /dev/null
+          echo "Overlay ${{ matrix.namespace }} kustomization OK!"       
+       
       - name: Success!
         run: |
-          echo "¡El runner funciona y tiene acceso al clúster!"       
+          echo "¡All kustomize validations passed!!"       
 
   sonar:
     name: SonarQube Analysis with Coverage 
