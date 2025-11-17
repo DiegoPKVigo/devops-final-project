@@ -5,6 +5,10 @@ resources:
   - ../../../base/pgadmin
 
 patches:
+  - path: ./deployment-patch.yaml
+    target:
+      kind: Deployment
+      name: pgadmin
   - path: ./ingress-patch.yaml
     target:
       kind: Ingress

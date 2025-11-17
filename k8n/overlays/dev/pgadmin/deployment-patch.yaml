@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+spec:
+  template:
+    spec:
+      containers:
+        - name: pgadmin
+          livenessProbe:
+            httpGet:
+              path: /dev/pgadmin/misc/ping
+
+          readinessProbe:
+            httpGet:
+              path: /dev/pgadmin/misc/ping
