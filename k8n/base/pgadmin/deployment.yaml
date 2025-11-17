@@ -14,16 +14,19 @@ spec:
     spec:
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4
+          image: dpage/pgadmin4:latest
           ports:
             - containerPort: 80
-          env:
-            - name: PGADMIN_DEFAULT_EMAIL
-              value: admin@example.com
-            - name: PGADMIN_DEFAULT_PASSWORD
-              value: admin
-            - name: SCRIPT_NAME
-              value: /pgadmin
+          envFrom:
+            - configMapRef:
+                name: pgadmin-config
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "125m"
+            limits:
+              memory: "10240Mi"
+              cpu: "2"
           livenessProbe:
             httpGet:
               path: /pgadmin/misc/ping
