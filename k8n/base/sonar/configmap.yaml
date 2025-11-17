@@ -8,4 +8,4 @@ data:
   POSTGRES_DB: postgres
   SONAR_JDBC_USERNAME: postgres # TODO: Create specific user for sonar?
   SONAR_JDBC_PASSWORD: "your-secret-password" # TODO: Must use postgresql's defined secret
-  SONARQUBE_WEB_CONTEXT: /sonar
+  SONAR_WEB_CONTEXT: /sonar
