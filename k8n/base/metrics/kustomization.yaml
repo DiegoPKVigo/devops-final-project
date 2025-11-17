@@ -10,3 +10,4 @@ resources:
   - rbac-prometheus.yaml
   - daemonset_promtail.yaml
   - daemonset-node-exporter.yaml
+  - service-node-exporter.yaml
