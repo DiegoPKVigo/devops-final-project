@@ -18,23 +18,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Start minikube
-        id: minikube
-        uses: medyagh/setup-minikube@latest
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
 
       - name: Check runner environment
         run: |
-          echo "Información del runner:"
+          echo "runner info:"
           echo "Hostname: $(hostname)"
           echo "OS: $(uname -s)"
-          echo "Directorio de trabajo: $(pwd)"
+          echo "Workdir: $(pwd)"
         
-      - name: Verify minikube & kubectl access
+      - name: Verify kubectl access
         run: |
-          echo "Verificando minikube y acceso a Kubernetes..."
-          minikube status || true
+          echo "Verify Kubernetes access..."
           kubectl version --client
-          kubectl config current-context
 
       - name: Validate kustomize base
         run: |
