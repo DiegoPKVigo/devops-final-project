@@ -6,12 +6,27 @@ namePrefix: monitoring-
 
 
 resources:
-  - deployment.yaml
-  - service.yaml
-  - configmap.yaml
+  # Deployments
+  - deployment-grafana.yaml
+  - deployment-prometheus.yaml
+  - deployment-loki.yaml
+  # Services
+  - service-grafana.yaml
+  - service-prometheus.yaml
+  - service-loki.yaml
+  - service-node-exporter.yaml
+  # Ingresses
+  - ingress-grafana.yaml
+  - ingress-prometheus.yaml
+  # ConfigMaps
+  - configmap-prometheus.yaml
+  - configmap-promtail.yaml
+  - configmap-grafana.yaml
+  - configmap-prometheus-args.yaml
+  # DaemonSets
   - daemonset_promtail.yaml
   - daemonset-node-exporter.yaml
-  - service-node-exporter.yaml
+  # RBAC
   - rbac_promtail.yaml
   - rbac-prometheus.yaml
 

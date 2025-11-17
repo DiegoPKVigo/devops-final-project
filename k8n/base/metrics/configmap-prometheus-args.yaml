@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-args
+  namespace: monitoring
+data:
+  web-external-url: "--web.external-url=http://localhost/prometheus/"

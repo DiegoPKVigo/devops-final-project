@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: monitoring
+data:
+  GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana"
