@@ -14,7 +14,7 @@ spec:
     spec:
       serviceAccount: promtail-serviceaccount
       containers:
-        - name: promtail-container
+        - name: monitoring-promtail-container
           image: grafana/promtail:latest
           args:
             - -config.file=/etc/promtail/promtail.yaml
