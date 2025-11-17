@@ -3,16 +3,15 @@ kind: Ingress
 metadata:
   name: sonar-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-  - http:
-      paths:
-      - path: /sonar(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: sonar-service
-            port:
-              number: 9000
+    - http:
+        paths:
+          - path: /sonar
+            pathType: Prefix
+            backend:
+              service:
+                name: sonar-service
+                port:
+                  number: 9000

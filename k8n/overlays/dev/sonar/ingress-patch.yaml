@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: pgadmin-ingress
+  name: sonar-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
     - http:
         paths:
-          - path: /pgadmin
+          - path: /dev/sonar
             pathType: Prefix
             backend:
               service:
-                name: pgadmin-service
+                name: sonar-service
                 port:
-                  number: 80
+                  number: 9000
