@@ -5,4 +5,4 @@ metadata:
 data:
   POSTGRES_HOST: dev-postgres
   SONAR_JDBC_PASSWORD: your-dev-password
-  SONARQUBE_WEB_CONTEXT: /dev/sonar
+  SONAR_WEB_CONTEXT: /dev/sonar
