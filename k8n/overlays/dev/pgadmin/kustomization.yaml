@@ -4,13 +4,8 @@ kind: Kustomization
 resources:
   - ../../../base/pgadmin
 
-
 patches:
-  - path: ./nginx-test/replica-patch.yaml
-    target:
-      kind: Deployment
-      name: nginx-test
-  - path: ./nginx-test/ingress-patch.yaml
+  - path: ./ingress-patch.yaml
     target:
       kind: Ingress
-      name: nginx-test-ingress
+      name: pgadmin-ingress
