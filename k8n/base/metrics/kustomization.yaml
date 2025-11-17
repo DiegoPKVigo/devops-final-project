@@ -6,8 +6,8 @@ resources:
   - deployment.yaml
   - service.yaml
   - configmap.yaml
-  - rbac_promtail.yaml
-  - rbac-prometheus.yaml
   - daemonset_promtail.yaml
   - daemonset-node-exporter.yaml
   - service-node-exporter.yaml
+  - rbac_promtail.yaml
+  - rbac-prometheus.yaml
