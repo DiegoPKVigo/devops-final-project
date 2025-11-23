@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonar-config
+data:
+  POSTGRES_HOST: staging-postgres
+  SONAR_JDBC_PASSWORD: your-staging-password
+  SONAR_WEB_CONTEXT: /staging/sonar

@@ -5,10 +5,11 @@ namespace: staging
 namePrefix: staging-
 
 resources:
+  - ../../base
   - ./artifacts
   - ./postgres
-  # - ./pgadmin
-  # - ./sonar
+  - ./pgadmin
+  - ./sonar
 
 labels:
   - pairs:
